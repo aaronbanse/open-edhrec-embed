@@ -2,7 +2,7 @@
 .DS_Store
 
 # Ignore Python cache files
-#__pycache__/
+__pycache__/
 
 # Ignore dataset files that can be regenerated quickly
 training_set.pt
