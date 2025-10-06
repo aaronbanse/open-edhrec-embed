@@ -5,4 +5,5 @@
 __pycache__/
 
 # Ignore dataset files that can be regenerated quickly
-training_set.pt
+*.pt
+*.db

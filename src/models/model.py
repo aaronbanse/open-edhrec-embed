@@ -23,3 +23,9 @@ class CardPointwiseMutualPredictor(nn.Module):
         combined = torch.cat([commander_embed, condition_card_embed, target_card_embed], dim=-1)
         score = self.encoder(combined)
         return score
+    
+    def card_embeddings(self):
+        return self.card_embedding.weight.data.cpu()
+    
+    def commander_embeddings(self):
+        return self.commander_embedding.weight.data.cpu()

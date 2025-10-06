@@ -35,7 +35,7 @@ class TrainingSetCreator:
         return self.cards_above_threshold_cache[threshold]
 
     def _get_commander_card_pairs_above_threshold(self, threshold):
-        cards_list = list(self.get_cards_above_threshold(threshold))
+        cards_list = list(self._get_cards_above_threshold(threshold))
 
         # Use IN clause with cached card IDs
         placeholders = ','.join('?' * len(cards_list))
@@ -51,7 +51,7 @@ class TrainingSetCreator:
 
     def _get_all_commander_cards_above_threshold(self, threshold):
         """Get all commander->cards mappings in one query"""
-        cards_list = list(self.get_cards_above_threshold(threshold))
+        cards_list = list(self._get_cards_above_threshold(threshold))
 
         placeholders = ','.join('?' * len(cards_list))
         result = self.cursor.execute(f"""
@@ -162,7 +162,7 @@ class TrainingSetCreator:
         return torch.tensor([commander_id, condition_card_id, target_card_id], dtype=torch.long), torch.tensor([score], dtype=torch.float)
 
     # create the full training set
-    def create_training_set(self, threshold=100):
+    def create_training_set(self, threshold=500):
         start_time = time.time()
         
         print("Caching cards above threshold...")
@@ -179,7 +179,7 @@ class TrainingSetCreator:
         
         # limit examples per pair to the minimum number of cards available for any commander
         # so dataset is balanced
-        examples_per_pair = torch.min([len(cards) for cards in commander_cards.values()]).item()
+        examples_per_pair = torch.min(torch.LongTensor([len(cards) for cards in commander_cards.values()])).item()
         
         # Pre-allocate tensors
         estimated_examples = len(pairs) * examples_per_pair
@@ -218,7 +218,7 @@ class TrainingSetCreator:
         data = data[:example_idx]
         scores = scores[:example_idx]
         
-        torch.save({'data': data, 'scores': scores}, "training_set.pt")
+        torch.save({'data': data, 'scores': scores}, "data/processed/training_set.pt")
         print(f"Created {len(data):,} examples in {time.time() - start_time:.2f}s")
         
         return data, scores
