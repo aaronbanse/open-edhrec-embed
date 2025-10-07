@@ -2,8 +2,9 @@ import sqlite3
 from src.data.edhrec_scraper import EDHRECScraper, setup_database, empty_tables
 import argparse
 
+# currently can only hit top 100 commanders, need to figure out how to trigger the 'load more' button on the top commanders page
 def main():
-    parser = argparse.ArgumentParser(description='Train EDHREC PMI Model')
+    parser = argparse.ArgumentParser(description='Scrape EDHREC decklists')
     parser.add_argument('--decks-per-commander', type=int, default=1000, 
                         help='Number of unique cards')
     parser.add_argument('--continue-existing-db', action='store_true')
